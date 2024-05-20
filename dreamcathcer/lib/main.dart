@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'design_elements.dart';
 
 //Github Version
 
@@ -115,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     SizedBox(width: marginXSmall),
                     Icon(
                       Icons.play_arrow,
-                      color: emptyPink,
+                      color: DesignElements.emptyPink,
                     ),
                     SizedBox(width: marginXSmall),
                     Text(
