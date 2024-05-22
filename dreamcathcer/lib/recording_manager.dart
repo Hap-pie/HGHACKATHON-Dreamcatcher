@@ -6,13 +6,12 @@ import 'package:path_provider/path_provider.dart';
 
 class AudioManager{
 
-
-
   static AudioPlayer audioPlayer = AudioPlayer();
-  static AudioRecorder _recorder = AudioRecorder();
-  static bool isRecording = false;
-  bool _recordSelected = false;
+  static final AudioRecorder _recorder = AudioRecorder();
   static late String _filePath;
+  // static bool isRecording = false;
+  // bool _recordSelected = false;
+
 
   static double currentPosition = 0;
   static double totalDuration = 0;
@@ -31,10 +30,10 @@ class AudioManager{
     final directoryApp = await getApplicationDocumentsDirectory();
     final directory = '${directoryApp.path}/recordings';
 
-    // Generate a unique file name using the current timestamp
-    String filePrefix = '${DateTime.now().millisecondsSinceEpoch}';
-    String audioFileName = 'recording_$filePrefix.wav';
-    String textFileName = 'transcriptions_$filePrefix.txt';
+    // // Generate a unique file name using the current timestamp
+    // String filePrefix = '${DateTime.now().millisecondsSinceEpoch}';
+    // String audioFileName = 'recording_$filePrefix.wav';
+    // String textFileName = 'transcriptions_$filePrefix.txt';
 
     String fileName = 'test-audio.wav';
     _filePath = '$directory/$fileName';
@@ -51,12 +50,13 @@ class AudioManager{
     // Start recording to file with the specified configuration
     await _recorder.start(config, path: _filePath!);
 
-    isRecording = true;
+    //isRecording = true;
   }
 
   static Future<void> stopRecording() async {
-    final path2 = await _recorder.stop();
-    isRecording = false;
+    //final path2 =
+    await _recorder.stop();
+    //isRecording = false;
 
   }
 
@@ -74,7 +74,6 @@ class AudioManager{
 
   Future<void> deleteRecording() async{
 
-    currentRecordingState = RecordingState.start;
     await File(_filePath).delete();
 
 
