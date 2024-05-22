@@ -394,8 +394,12 @@ import 'dart:io';
 import 'package:dreamcathcer/recording_manager.dart';
 import 'package:dreamcathcer/transcribe_service.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'design_elements.dart';
+
+enum RecordingState { start, recording, archive }
 
 void main() {
   runApp(MyApp());
@@ -406,15 +410,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Audio Recorder and Player',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: AudioPage(),
+
+      home: AudioPage(title: 'dreamcatcher'),
     );
   }
 }
 
 class AudioPage extends StatefulWidget {
+  const AudioPage({super.key, required this.title});
+  final String title;
   @override
   _AudioPageState createState() => _AudioPageState();
 }
@@ -449,98 +453,50 @@ class _AudioPageState extends State<AudioPage> {
   @override
   void dispose() {
     audioManager.dispose();
-    /*_audioPlayer.dispose();
-    _recorder.dispose();*/
     super.dispose();
   }
 
   Future<void> _transcribeRecording() async {
+    await AudioManager.stopRecording();
     print('in');
     final directory = await getApplicationDocumentsDirectory();
     String filePath = '';
     filePath = '${directory.path}/recordings/test-audio.wav';
     print(filePath);
 
+    setState(() {
+
+    });
+
     await _transcribeService.transcribe(filePath!);
 
     setState(() {
       _isTranscribing = true;
+      ///TODO:
+      ///changing UI while waiting for the transcribing service
+      ///print the transcribed message
+      ///give option to replay audio (I guess)
       _transcribedText = _transcribeService.getTranscribedText();
       print('_transcribedText: $_transcribedText');
     });
 
   }
 
-  /*Future<void> _startRecording() async {
-
-    final bool isPermissionGranted = await _recorder.hasPermission();
-    if (!isPermissionGranted) {
-      return;
-    }
-
-    final directoryApp = await getApplicationDocumentsDirectory();
-    final directory = '${directoryApp.path}/recordings';
-
-    // Generate a unique file name using the current timestamp
-    String fileName = 'recording_${DateTime.now().millisecondsSinceEpoch}.wav';
-    _filePath = '$directory/$fileName';
-
-    // Define the configuration for the recording
-    const config = RecordConfig(
-      // Specify the format, encoder, sample rate, etc., as needed
-      encoder: AudioEncoder.wav, // For example, using AAC codec
-      sampleRate: 44100, // Sample rate
-      bitRate: 128000, // Bit rate
-      numChannels: 1,
-    );
-
-    // Start recording to file with the specified configuration
-    await _recorder.start(config, path: _filePath!);
-    setState(() {
-      _isRecording = true;
-    });
-  }
-
-  Future<void> _stopRecording(String path) async {
-    final path2 = await _recorder.stop();
-    setState(() {
-      _isRecording = false;
-    });
-  }
-
-  Future<void> _playRecording(String path) async {
-    if (_filePath != null) {
-      await _audioPlayer.setFilePath(_filePath!);
-      _totalDuration = _audioPlayer.duration?.inSeconds.toDouble() ?? 0;
-      _audioPlayer.play();
-
-      _audioPlayer.positionStream.listen((position) {
-        setState(() {
-          _currentPosition = position.inSeconds.toDouble();
-        });
-      });
-    }
-  }
-
-  Future<void> _deleteRecording(String path) async{
-
-    await File(path).delete();
-
-  }*/
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff1B1414),
       appBar: AppBar(
-        actions: [Text('lib')],
-        title: const Text('Modern Audio Recorder'),
-        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        title: Text(widget.title,
+            style: GoogleFonts.urbanist(
+                color: const Color(0xffFF9B71),
+                fontSize: 22,
+                fontWeight: FontWeight.bold)),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
+      body: Stack(
+        children: [Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
@@ -622,8 +578,142 @@ class _AudioPageState extends State<AudioPage> {
               ),
               child: const Text('Transcribe'),
             ),
+
+
           ],
         ),
+          Positioned(
+            bottom: 0,
+            child: Container(
+              height: 114,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                  color: Color(0xff3C3030),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16.0),
+                    topRight: Radius.circular(16.0),
+                  )),
+                child: AudioManager.currentRecordingState == RecordingState.start
+                    ? Row(
+                  children: [
+                    SizedBox(width: DesignElements.marginDefault ),
+                    Text('Lets catch a thought', style: DesignElements.ctaJosefin),
+                    Spacer(),
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundColor: DesignElements.accentPink,
+                      child: Center(
+                        child: Ink(
+                          decoration: ShapeDecoration(
+                              color: DesignElements.mainPink, shape: CircleBorder()),
+                          child: IconButton(
+                            iconSize: 35,
+                            onPressed: () async => { await AudioManager.startRecording(),
+                              setState(() {})
+                            },
+                            icon: Icon(Icons.play_arrow),
+                            color: DesignElements.mainPink,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: DesignElements.marginDefault),
+                  ],
+                )
+                    : AudioManager.currentRecordingState == RecordingState.recording
+                    ? Row(
+                  children: [
+                    SizedBox(width: DesignElements.marginDefault),
+                    Text(
+                      "I'm listening...",
+                      style: DesignElements.timerStyle,
+                    ),
+                    Spacer(),
+                    Row(
+                      children: [
+                        Text('00:00', style: DesignElements.timerStyle),
+                        SizedBox(width: DesignElements.marginMedium),
+                        CircleAvatar(
+                          radius: 30,
+                          backgroundColor: DesignElements.mainPink,
+                          child: Center(
+                            child: Ink(
+                              decoration: ShapeDecoration(
+                                  color: DesignElements.mainPink,
+                                  shape: CircleBorder()),
+                              child: IconButton(
+                                iconSize: 20,
+                                onPressed:
+                                  _transcribeRecording,
+
+                                icon: Icon(Icons.square),
+                                color: DesignElements.accentPink,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: DesignElements.marginDefault),
+                      ],
+                    ),
+                  ],
+                )
+                    : Row(
+                  children: [
+                    SizedBox(width: DesignElements.marginDefault),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xffAD9692),
+                      ),
+                      onPressed: () async => {
+                            await audioManager.deleteRecording(),
+                        setState(() {
+
+                        })
+                      },
+                      child: Text(
+                        'Discard',
+                        style: GoogleFonts.urbanist(
+                            letterSpacing: 1,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff1B1414)),
+                      ),
+                    ),
+                    Spacer(),
+                    Row(
+                      children: [
+                        Text('01:21', style: DesignElements.timerStyle),
+                        SizedBox(width: DesignElements.marginMedium),
+                        Center(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(120, 60),
+                              backgroundColor: DesignElements.accentPink,
+                            ),
+                            onPressed: () => {
+                        AudioManager.currentRecordingState =
+                        RecordingState.start,
+                        setState(() {
+
+                        })
+                        },
+                            child: Text(
+                              'Save',
+                              style: GoogleFonts.urbanist(
+                                  letterSpacing: 1,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: DesignElements.mainPink),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: DesignElements.marginDefault),
+                      ],
+                    ),
+                  ],
+                ),
+            ),
+          )
+        ]
       ),
     );
   }

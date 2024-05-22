@@ -49,6 +49,31 @@ class DesignElements{
       letterSpacing: 0
   );
 
-  //#endregion
+  static TextStyle timerStyle = GoogleFonts.urbanist(
+      color: mainPink,
+      fontSize: 18,
+      fontWeight: FontWeight.normal,
+      letterSpacing: 0);
+
+  static TextStyle cardBodyStyle = GoogleFonts.josefinSans(
+      color: Color(0xffD7BCB7),
+      fontSize: 16,
+      height: 1.3,
+      fontWeight: FontWeight.normal,
+      letterSpacing: 0.5);
+
+  static TextStyle cardTitleStyle = GoogleFonts.merriweather(
+      color: mainPink,
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 1.5);
+
+  static TextStyle dateStyle = GoogleFonts.merriweather(
+      color: Color(0xffA08B87),
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 1.5);
+
+//#endregion
 
 }

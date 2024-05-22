@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'package:dreamcathcer/main.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:record/record.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AudioManager{
+
+
 
   static AudioPlayer audioPlayer = AudioPlayer();
   static AudioRecorder _recorder = AudioRecorder();
@@ -13,11 +16,13 @@ class AudioManager{
 
   static double currentPosition = 0;
   static double totalDuration = 0;
+  static RecordingState currentRecordingState = RecordingState.start;
+
 
 
 
   static Future<void> startRecording() async {
-
+    currentRecordingState = RecordingState.recording;
     final bool isPermissionGranted = await _recorder.hasPermission();
     if (!isPermissionGranted) {
       return;
@@ -45,12 +50,15 @@ class AudioManager{
 
     // Start recording to file with the specified configuration
     await _recorder.start(config, path: _filePath!);
+
     isRecording = true;
   }
 
   static Future<void> stopRecording() async {
+    currentRecordingState = RecordingState.archive;
     final path2 = await _recorder.stop();
     isRecording = false;
+
   }
 
   Future<void> playRecording() async {
@@ -67,7 +75,9 @@ class AudioManager{
 
   Future<void> deleteRecording() async{
 
+    currentRecordingState = RecordingState.start;
     await File(_filePath).delete();
+
 
   }
 
@@ -76,5 +86,7 @@ class AudioManager{
     _recorder.dispose();
 
   }
+
+
 
 }
