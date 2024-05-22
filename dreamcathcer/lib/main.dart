@@ -331,6 +331,7 @@ class __ArchiveBottomBarStateState extends State<ArchiveBottomBarState> {
 
         ElevatedButton(
           style: ElevatedButton.styleFrom(
+            
             backgroundColor: Color(0xffAD9692),
           ),
           onPressed: () {
