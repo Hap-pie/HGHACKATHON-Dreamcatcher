@@ -1,5 +1,5 @@
 import 'dart:ui';
-
+import 'package:dreamcathcer/design_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,39 +14,7 @@ Widget BottomRecordingBar = Container();
 enum RecordingState { start, recording, archive }
 
 var currentRecordingState = RecordingState.start;
-
-Color emptyPink = Color(0xffA08B87);
-Color mainPink = Color(0xffF9DBD4);
-Color accentPink = Color(0xffB55051);
-
-double marginXLarge = 64;
-double marginDefault = 16;
-double marginMedium = 12;
-double marginXSmall = 4;
-
-TextStyle emptyStateFontMerri = GoogleFonts.merriweather(
-    color: emptyPink,
-    fontSize: 22,
-    fontWeight: FontWeight.bold,
-    letterSpacing: 2);
-
-TextStyle emptyStateFontUrban = GoogleFonts.urbanist(
-    color: emptyPink,
-    fontSize: 18,
-    fontWeight: FontWeight.normal,
-    letterSpacing: 0.5);
-
-TextStyle ctaJosefin = GoogleFonts.urbanist(
-    color: mainPink,
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-    letterSpacing: 1);
-
-TextStyle timer = GoogleFonts.urbanist(
-    color: mainPink,
-    fontSize: 18,
-    fontWeight: FontWeight.normal,
-    letterSpacing: 0);
+     
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -72,6 +40,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    double cardWidth = MediaQuery.of(context).size.width * 0.85;
     return Scaffold(
       backgroundColor: const Color(0xff1B1414),
       appBar: AppBar(
@@ -85,33 +54,34 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Stack(children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('Catch your first thought', style: emptyStateFontMerri),
-              // Column Margin
-              SizedBox(height: marginMedium),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Tap',
-                    style: emptyStateFontUrban,
+          Padding(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('May 17, Friday ', style: DesignElements.dateStyle),
+                SizedBox(height: DesignElements.marginMedium),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                      color: Color(0xff523F3F)
+                    ),
+                    child: ListView(
+                      
+                      children: <Widget> [
+                        Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Center(child: Text('Card Title', style: DesignElements.cardTitleStyle)),
+                        ),
+                        Padding(padding: EdgeInsets.only(left: 16, right: 16), child: Flexible(child: Text('Record Transciption String Here', style: DesignElements.cardBodyStyle, softWrap: true))),
+                      ],
+                    ),
                   ),
-                  SizedBox(width: marginXSmall),
-                  Icon(
-                    Icons.play_arrow,
-                    color: emptyPink,
-                  ),
-                  SizedBox(width: marginXSmall),
-                  Text(
-                    'to begin',
-                    style: emptyStateFontUrban,
-                  ),
-                ],
-              ),
-              SizedBox(height: marginXLarge)
-            ],
+                ),
+              ],
+            ),
           ),
           Positioned(
               bottom: 0,
@@ -127,16 +97,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: currentRecordingState == RecordingState.start
                       ? Row(
                           children: [
-                            SizedBox(width: marginDefault),
-                            Text('Lets catch a thought', style: ctaJosefin),
+                            SizedBox(width: DesignElements.marginDefault ),
+                            Text('Lets catch a thought', style: DesignElements.ctaJosefin),
                             Spacer(),
                             CircleAvatar(
                               radius: 30,
-                              backgroundColor: accentPink,
+                              backgroundColor: DesignElements.accentPink,
                               child: Center(
                                 child: Ink(
                                   decoration: ShapeDecoration(
-                                      color: mainPink, shape: CircleBorder()),
+                                      color: DesignElements.mainPink, shape: CircleBorder()),
                                   child: IconButton(
                                     iconSize: 35,
                                     onPressed: () => setState(() {
@@ -144,34 +114,34 @@ class _MyHomePageState extends State<MyHomePage> {
                                           RecordingState.recording;
                                     }),
                                     icon: Icon(Icons.play_arrow),
-                                    color: mainPink,
+                                    color: DesignElements.mainPink,
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(width: marginDefault),
+                            SizedBox(width: DesignElements.marginDefault),
                           ],
                         )
                       : currentRecordingState == RecordingState.recording
                           ? Row(
                               children: [
-                                SizedBox(width: marginDefault),
+                                SizedBox(width: DesignElements.marginDefault),
                                 Text(
                                   "I'm listening...",
-                                  style: timer,
+                                  style: DesignElements.timerStyle,
                                 ),
                                 Spacer(),
                                 Row(
                                   children: [
-                                    Text('00:00', style: timer),
-                                    SizedBox(width: marginMedium),
+                                    Text('00:00', style: DesignElements.timerStyle),
+                                    SizedBox(width: DesignElements.marginMedium),
                                     CircleAvatar(
                                       radius: 30,
-                                      backgroundColor: mainPink,
+                                      backgroundColor: DesignElements.mainPink,
                                       child: Center(
                                         child: Ink(
                                           decoration: ShapeDecoration(
-                                              color: mainPink,
+                                              color: DesignElements.mainPink,
                                               shape: CircleBorder()),
                                           child: IconButton(
                                             iconSize: 20,
@@ -181,19 +151,19 @@ class _MyHomePageState extends State<MyHomePage> {
                                               // Stop recording function here
                                             }),
                                             icon: Icon(Icons.square),
-                                            color: accentPink,
+                                            color: DesignElements.accentPink,
                                           ),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(width: marginDefault),
+                                    SizedBox(width: DesignElements.marginDefault),
                                   ],
                                 ),
                               ],
                             )
                           : Row(
                               children: [
-                                SizedBox(width: marginDefault),
+                                SizedBox(width: DesignElements.marginDefault),
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xffAD9692),
@@ -210,13 +180,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                 Spacer(),
                                 Row(
                                   children: [
-                                    Text('01:21', style: timer),
-                                    SizedBox(width: marginMedium),
+                                    Text('01:21', style: DesignElements.timerStyle),
+                                    SizedBox(width: DesignElements.marginMedium),
                                     Center(
                                       child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                           fixedSize: Size(120, 60),
-                                          backgroundColor: accentPink,
+                                          backgroundColor: DesignElements.accentPink,
                                         ),
                                         onPressed: () => setState(() {
                                           currentRecordingState =
@@ -228,11 +198,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                               letterSpacing: 1,
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
-                                              color: mainPink),
+                                              color: DesignElements.mainPink),
                                         ),
                                       ),
                                     ),
-                                    SizedBox(width: marginDefault),
+                                    SizedBox(width: DesignElements.marginDefault),
                                   ],
                                 ),
                               ],
@@ -255,30 +225,58 @@ class _StartRecordingWidgetState extends State<StartRecordingWidget> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(width: marginDefault),
-        Text('Lets catch a thought', style: ctaJosefin),
+        SizedBox(width: DesignElements.marginDefault),
+        Text('Lets catch a thought', style: DesignElements.ctaJosefin),
         Spacer(),
         CircleAvatar(
           radius: 30,
-          backgroundColor: accentPink,
+          backgroundColor: DesignElements.accentPink,
           child: Center(
             child: Ink(
               decoration:
-                  ShapeDecoration(color: mainPink, shape: CircleBorder()),
+                  ShapeDecoration(color: DesignElements.mainPink, shape: CircleBorder()),
               child: IconButton(
                 iconSize: 35,
                 onPressed: () => setState(() {
                   // Start recording function here
                 }),
                 icon: Icon(Icons.play_arrow),
-                color: mainPink,
+                color: DesignElements.mainPink,
               ),
             ),
           ),
         ),
-        SizedBox(width: marginDefault),
+        SizedBox(width: DesignElements.marginDefault),
       ],
     );
   }
 }
 
+Widget EmptyState = Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text('Catch your first thought', style: DesignElements.emptyStateFontMerri),
+              // Column Margin
+              SizedBox(height: DesignElements.marginMedium),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Tap',
+                    style: DesignElements.emptyStateFontUrban,
+                  ),
+                  SizedBox(width:DesignElements. marginXSmall),
+                  Icon(
+                    Icons.play_arrow,
+                    color: DesignElements.emptyPink,
+                  ),
+                  SizedBox(width: DesignElements.marginXSmall),
+                  Text(
+                    'to begin',
+                    style: DesignElements.emptyStateFontUrban,
+                  ),
+                ],
+              ),
+              SizedBox(height: DesignElements.marginXLarge)
+            ],
+          );
