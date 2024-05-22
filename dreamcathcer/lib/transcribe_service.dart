@@ -25,7 +25,7 @@ class TranscribeService {
       audioChannelCount: 1,
       model: RecognitionModel.basic,
       enableAutomaticPunctuation: true,
-      sampleRateHertz: 48000,
+      sampleRateHertz: 44100,
     );
 
     // Accesses the filePath argument from transcribe function above

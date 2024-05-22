@@ -429,7 +429,7 @@ class _AudioPageState extends State<AudioPage> {
   late List<String> fileList;*/
   AudioManager audioManager = AudioManager();
   TranscribeService _transcribeService = TranscribeService();
-  late String _filePath;
+  // late String _filePath;
   bool _isTranscribing = false;
   String _transcribedText = "";
 
@@ -442,6 +442,8 @@ class _AudioPageState extends State<AudioPage> {
 
   _callFolderCreationMethod() async {
     await AppUtil.createFolderInAppDocDir('recordings');
+    await AppUtil.createFolderInAppDocDir('transcriptions');
+
   }
 
   @override
@@ -455,9 +457,11 @@ class _AudioPageState extends State<AudioPage> {
   Future<void> _transcribeRecording() async {
     print('in');
     final directory = await getApplicationDocumentsDirectory();
-    _filePath = '${directory.path}/recordings/test-audio.wav';
+    String filePath = '';
+    filePath = '${directory.path}/recordings/test-audio.wav';
+    print(filePath);
 
-    await _transcribeService.transcribe(_filePath!);
+    await _transcribeService.transcribe(filePath!);
 
     setState(() {
       _isTranscribing = true;

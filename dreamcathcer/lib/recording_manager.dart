@@ -27,7 +27,11 @@ class AudioManager{
     final directory = '${directoryApp.path}/recordings';
 
     // Generate a unique file name using the current timestamp
-    String fileName = 'recording_${DateTime.now().millisecondsSinceEpoch}.wav';
+    String filePrefix = '${DateTime.now().millisecondsSinceEpoch}';
+    String audioFileName = 'recording_$filePrefix.wav';
+    String textFileName = 'transcriptions_$filePrefix.txt';
+
+    String fileName = 'test-audio.wav';
     _filePath = '$directory/$fileName';
 
     // Define the configuration for the recording
