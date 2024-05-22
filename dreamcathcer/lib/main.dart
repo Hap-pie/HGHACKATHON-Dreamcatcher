@@ -1,12 +1,20 @@
+/*
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'design_elements.dart';
+import 'package:google_gemini/google_gemini.dart';
 
 //Github Version
 
+const apiKey = "AIzaSyCO97zqOFtIw_qIwtC_DIbtAYmbsAdMdxY";
+
+
 void main() {
+
+
+
   runApp(const MyApp());
 }
 
@@ -18,6 +26,7 @@ var currentRecordingState = RecordingState.defaultState;
 Color emptyPink =  Color(0xffA08B87);
 Color mainPink =  Color(0xffF9DBD4);
 Color accentPink = Color(0xffB55051);
+
 
 double marginXLarge = 64;
 double marginDefault = 16;
@@ -69,11 +78,14 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
   final String title;
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+
 
 
   late RecordingState _recordingState;
@@ -185,7 +197,12 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+
+
 }
+
+
 
 Widget buttonHandler(RecordingState state) {
   switch (state) {
@@ -355,7 +372,7 @@ class __ArchiveBottomBarStateState extends State<ArchiveBottomBarState> {
                   backgroundColor: accentPink,
                 ),
               onPressed: () {
-                // save recording function here
+                catch
               },
               child: Text(
                 'Save', style: GoogleFonts.urbanist(letterSpacing: 1, fontSize: 18, fontWeight: FontWeight.bold, color: mainPink),
@@ -370,4 +387,265 @@ class __ArchiveBottomBarStateState extends State<ArchiveBottomBarState> {
       ],
     );
   }
+}*/
+
+import 'dart:io';
+
+import 'package:dreamcathcer/recording_manager.dart';
+import 'package:dreamcathcer/transcribe_service.dart';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Audio Recorder and Player',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: AudioPage(),
+    );
+  }
+}
+
+class AudioPage extends StatefulWidget {
+  @override
+  _AudioPageState createState() => _AudioPageState();
+}
+
+class _AudioPageState extends State<AudioPage> {
+  /*final AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioRecorder _recorder = AudioRecorder();
+  bool _isRecording = false;
+  late String _filePath;
+  double _currentPosition = 0;
+  double _totalDuration = 0;
+  late List<String> fileList;*/
+  AudioManager audioManager = AudioManager();
+  TranscribeService _transcribeService = TranscribeService();
+  late String _filePath;
+  bool _isTranscribing = false;
+  String _transcribedText = "";
+
+  @override
+  initState() {
+    super.initState();
+    _callFolderCreationMethod();
+
+  }
+
+  _callFolderCreationMethod() async {
+    await AppUtil.createFolderInAppDocDir('recordings');
+  }
+
+  @override
+  void dispose() {
+    audioManager.dispose();
+    /*_audioPlayer.dispose();
+    _recorder.dispose();*/
+    super.dispose();
+  }
+
+  Future<void> _transcribeRecording() async {
+    print('in');
+    final directory = await getApplicationDocumentsDirectory();
+    _filePath = '${directory.path}/recordings/test-audio.wav';
+
+    await _transcribeService.transcribe(_filePath!);
+
+    setState(() {
+      _isTranscribing = true;
+      _transcribedText = _transcribeService.getTranscribedText();
+      print('_transcribedText: $_transcribedText');
+    });
+
+  }
+
+  /*Future<void> _startRecording() async {
+
+    final bool isPermissionGranted = await _recorder.hasPermission();
+    if (!isPermissionGranted) {
+      return;
+    }
+
+    final directoryApp = await getApplicationDocumentsDirectory();
+    final directory = '${directoryApp.path}/recordings';
+
+    // Generate a unique file name using the current timestamp
+    String fileName = 'recording_${DateTime.now().millisecondsSinceEpoch}.wav';
+    _filePath = '$directory/$fileName';
+
+    // Define the configuration for the recording
+    const config = RecordConfig(
+      // Specify the format, encoder, sample rate, etc., as needed
+      encoder: AudioEncoder.wav, // For example, using AAC codec
+      sampleRate: 44100, // Sample rate
+      bitRate: 128000, // Bit rate
+      numChannels: 1,
+    );
+
+    // Start recording to file with the specified configuration
+    await _recorder.start(config, path: _filePath!);
+    setState(() {
+      _isRecording = true;
+    });
+  }
+
+  Future<void> _stopRecording(String path) async {
+    final path2 = await _recorder.stop();
+    setState(() {
+      _isRecording = false;
+    });
+  }
+
+  Future<void> _playRecording(String path) async {
+    if (_filePath != null) {
+      await _audioPlayer.setFilePath(_filePath!);
+      _totalDuration = _audioPlayer.duration?.inSeconds.toDouble() ?? 0;
+      _audioPlayer.play();
+
+      _audioPlayer.positionStream.listen((position) {
+        setState(() {
+          _currentPosition = position.inSeconds.toDouble();
+        });
+      });
+    }
+  }
+
+  Future<void> _deleteRecording(String path) async{
+
+    await File(path).delete();
+
+  }*/
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        actions: [Text('lib')],
+        title: const Text('Modern Audio Recorder'),
+        elevation: 0,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              AudioManager.isRecording ? Icons.mic : Icons.mic_none,
+              size: 100,
+              color: AudioManager.isRecording ? Colors.red : Colors.blue,
+            ),
+            const SizedBox(height: 40,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: AudioManager.isRecording ? null : () async => { await AudioManager.startRecording(),
+                    setState(() {})
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 15),
+                  ),
+                  child: const Text('Record'),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: AudioManager.isRecording ? () async => {await AudioManager.stopRecording(),
+
+                    setState(() {})
+                  } : null,//_stopRecording(_filePath!) : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 15),
+                  ),
+                  child: const Text('Stop'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: !AudioManager.isRecording ? () async => {await audioManager.playRecording(), setState(() {})} : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding:
+                const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              ),
+              child: const Text('Play'),
+            ),
+
+
+            Slider(
+              value: AudioManager.currentPosition,
+              max: AudioManager.totalDuration,
+              onChanged: (value) {
+                setState(() {
+                  AudioManager.currentPosition = value;
+                });
+                AudioManager.audioPlayer.seek(Duration(seconds: value.toInt()));
+              },
+            ),
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: !AudioManager.isRecording ? () => audioManager.deleteRecording() : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                padding:
+                const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              ),
+              child: const Text('Delete'),
+            ),
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: _transcribeRecording, /*_isTranscribing ? () {} : _transcribeRecording,*//*!AudioManager.isRecording ? () => _transcribeRecording : null,*/
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                padding:
+                const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              ),
+              child: const Text('Transcribe'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+}
+
+class AppUtil{
+
+  static Future<String> createFolderInAppDocDir(String folderName) async {
+
+    //Get this App Document Directory
+    final Directory _appDocDir = await getApplicationDocumentsDirectory();
+    //App Document Directory + folder name
+    final Directory _appDocDirFolder =  Directory('${_appDocDir.path}/$folderName/');
+
+    if(await _appDocDirFolder.exists()){ //if folder already exists return path
+      return _appDocDirFolder.path;
+    }else{//if folder not exists create folder and then return its path
+      final Directory _appDocDirNewFolder=await _appDocDirFolder.create(recursive: true);
+      return _appDocDirNewFolder.path;
+    }
+  }
+
+
+
+
+
 }
