@@ -22,7 +22,7 @@ class AudioManager{
 
 
   static Future<void> startRecording() async {
-    currentRecordingState = RecordingState.recording;
+
     final bool isPermissionGranted = await _recorder.hasPermission();
     if (!isPermissionGranted) {
       return;
@@ -55,7 +55,6 @@ class AudioManager{
   }
 
   static Future<void> stopRecording() async {
-    currentRecordingState = RecordingState.archive;
     final path2 = await _recorder.stop();
     isRecording = false;
 

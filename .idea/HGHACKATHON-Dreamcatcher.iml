@@ -11,6 +11,24 @@
       <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/build" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/linux/flutter/ephemeral/.plugin_symlinks/path_provider_linux/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/linux/flutter/ephemeral/.plugin_symlinks/path_provider_linux/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/linux/flutter/ephemeral/.plugin_symlinks/path_provider_linux/build" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/linux/flutter/ephemeral/.plugin_symlinks/path_provider_linux/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/linux/flutter/ephemeral/.plugin_symlinks/path_provider_linux/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/linux/flutter/ephemeral/.plugin_symlinks/path_provider_linux/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/linux/flutter/ephemeral/.plugin_symlinks/record_linux/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/linux/flutter/ephemeral/.plugin_symlinks/record_linux/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/linux/flutter/ephemeral/.plugin_symlinks/record_linux/build" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/windows/flutter/ephemeral/.plugin_symlinks/path_provider_windows/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/windows/flutter/ephemeral/.plugin_symlinks/path_provider_windows/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/windows/flutter/ephemeral/.plugin_symlinks/path_provider_windows/build" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/windows/flutter/ephemeral/.plugin_symlinks/path_provider_windows/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/windows/flutter/ephemeral/.plugin_symlinks/path_provider_windows/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/windows/flutter/ephemeral/.plugin_symlinks/path_provider_windows/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/windows/flutter/ephemeral/.plugin_symlinks/record_windows/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/windows/flutter/ephemeral/.plugin_symlinks/record_windows/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/dreamcathcer/windows/flutter/ephemeral/.plugin_symlinks/record_windows/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
