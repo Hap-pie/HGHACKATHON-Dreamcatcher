@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:dreamcathcer/recording_manager.dart';
 import 'package:dreamcathcer/transcribe_service.dart';
@@ -44,6 +45,28 @@ class _AudioPageState extends State<AudioPage> {
   String _transcribedText = "";
   String dateCard = "";
 
+  // timer var region
+  Duration duration = Duration();
+  Timer? timer;
+  bool isTimerRunning = false;
+  // region ends
+
+  // timer functions
+  void addTime() {
+    final addSecond = 1;
+
+    setState(() {
+      final seconds = duration.inSeconds + addSecond;
+      duration = Duration(seconds: seconds);
+    });
+
+  }
+  // region ends
+
+  void startTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
+  }
+
   @override
   initState() {
     super.initState();
@@ -62,6 +85,8 @@ class _AudioPageState extends State<AudioPage> {
   }
 
   Future<void> _transcribeRecording() async {
+
+    timer?.cancel(); 
     await AudioManager.stopRecording();
     //if (kDebugMode) {
     print('Stopped recording, starting transcription process');
@@ -237,6 +262,7 @@ class _AudioPageState extends State<AudioPage> {
                                     RecordingState.recording;
                               }),
                               AudioManager.startRecording(),
+                              startTimer()
                             },
                             icon: const Icon(Icons.play_arrow),
                             color: DesignElements.mainPink,
@@ -258,7 +284,7 @@ class _AudioPageState extends State<AudioPage> {
                         const Spacer(),
                         Row(
                           children: [
-                            Text('00:00', style: DesignElements.timerStyle),
+                            timerText(),
                             SizedBox(width: DesignElements.marginMedium),
                             CircleAvatar(
                               radius: 30,
@@ -294,7 +320,7 @@ class _AudioPageState extends State<AudioPage> {
                             const Spacer(),
                             Row(
                               children: [
-                                Text('00:00', style: DesignElements.timerStyle),
+                                timerText(),
                                 SizedBox(width: DesignElements.marginMedium),
                                 CircleAvatar(
                                   radius: 30,
@@ -330,7 +356,8 @@ class _AudioPageState extends State<AudioPage> {
                                 setState(() {
                                   AudioManager.currentRecordingState =
                                       RecordingState.start;
-                                })
+                                }),
+                                duration = Duration.zero
                               },
                               child: Text(
                                 'Discard',
@@ -343,7 +370,7 @@ class _AudioPageState extends State<AudioPage> {
                             const Spacer(),
                             Row(
                               children: [
-                                Text('01:21', style: DesignElements.timerStyle),
+                                timerText(),
                                 SizedBox(width: DesignElements.marginMedium),
                                 Center(
                                   child: ElevatedButton(
@@ -377,6 +404,14 @@ class _AudioPageState extends State<AudioPage> {
       ]),
     );
   }
+  Widget timerText() {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+    return Text('$minutes:$seconds', style: DesignElements.timerStyle);
+  }
+
 }
 
 class AppUtil {
