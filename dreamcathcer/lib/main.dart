@@ -4,6 +4,7 @@ import 'package:dreamcathcer/transcribe_service.dart';
 import 'package:dreamcathcer/ui_widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,8 @@ import 'design_elements.dart';
 enum RecordingState { start, recording, transcribing, refining, archive }
 
 void main() {
+
+  Gemini.init(apiKey: 'AIzaSyCO97zqOFtIw_qIwtC_DIbtAYmbsAdMdxY');
   runApp(const MyApp());
 }
 
@@ -80,6 +83,8 @@ class _AudioPageState extends State<AudioPage> {
 
     await _transcribeService.transcribe(filePath);
 
+
+
     setState(() {
       _transcribedText = _transcribeService.getTranscribedText();
       if (kDebugMode) {
@@ -87,6 +92,22 @@ class _AudioPageState extends State<AudioPage> {
       }
       AudioManager.currentRecordingState = RecordingState.archive;
     });
+  }
+
+  Future<void> _beautify() async {
+
+    final gemini = Gemini.instance;
+    gemini.text('Please clean up the grammar, spelling and cohesiveness off the following text: $_transcribedText')
+        .then((value) => {print('Gemini edit: ${value?.output}'),
+        _transcribedText = value as String
+        })
+        .catchError((e) => print(e));
+
+    setState(() {
+      
+    });
+
+
   }
 
   @override
@@ -121,7 +142,30 @@ class _AudioPageState extends State<AudioPage> {
                             color: Color(0xff523F3F)),
                         child: Column(
                           children: <Widget>[
-                            beautifyButton(),
+                                Row(
+                                children: [
+                                Flexible(child: Container()),
+                              Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: ElevatedButton.icon(
+                                  icon: Icon(Icons.generating_tokens, color: const Color(0xff1B1414)),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xffAD9692),
+                                  ),
+                                  onPressed:
+                                    _beautify
+                                  ,
+                                  label: Text(
+                                    'Beautify',
+                                    style: GoogleFonts.urbanist(
+                                        letterSpacing: 1,
+                                        fontWeight: FontWeight.bold,
+                                        color: const Color(0xff1B1414)),
+                                  ),
+                                ),
+                              ),
+                              ],
+                            ),
                             Column(
                               children: [
                                 Padding(
