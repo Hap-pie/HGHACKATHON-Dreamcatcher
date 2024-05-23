@@ -14,7 +14,7 @@ enum RecordingState { start, recording, transcribing, refining, archive }
 
 void main() {
 
-  Gemini.init(apiKey: 'AIzaSyCO97zqOFtIw_qIwtC_DIbtAYmbsAdMdxY');
+  Gemini.init(apiKey: 'AIzaSyA7NsFlfEt869I105xFvTGTYikBLztIqPE');
   runApp(const MyApp());
 }
 
@@ -99,12 +99,12 @@ class _AudioPageState extends State<AudioPage> {
     final gemini = Gemini.instance;
     gemini.text('Please clean up the grammar, spelling and cohesiveness off the following text: $_transcribedText')
         .then((value) => {print('Gemini edit: ${value?.output}'),
-        _transcribedText = value as String
+        _transcribedText = value!.output!
         })
         .catchError((e) => print(e));
 
     setState(() {
-      
+      AudioManager.currentRecordingState = RecordingState.archive;
     });
 
 
@@ -152,9 +152,7 @@ class _AudioPageState extends State<AudioPage> {
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xffAD9692),
                                   ),
-                                  onPressed:
-                                    _beautify
-                                  ,
+                                  onPressed: _beautify,
                                   label: Text(
                                     'Beautify',
                                     style: GoogleFonts.urbanist(
